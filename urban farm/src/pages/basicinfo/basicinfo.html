@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar color="primary" >
+    <ion-title>Basic Info</ion-title>
+    <ion-searchbar
+    *ngIf="!showBasicInfoPage"
+     [(ngModel)]="searchFor"
+     [showCancelButton]="shouldShowCancel"
+     (change) = "getUserPosition()"
+     (ionCancel)="onCancel($event)">
+   </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <!-- <ion-label color="primary">Inline Label</ion-label> -->
+
+    <ion-item *ngIf="showBasicInfoPage">
+      <ion-label>Name </ion-label>
+     <!-- <ion-input placeholder="Nick Name" [(ngModel)]="nName" ></ion-input> -->
+     <ion-input id = "somthing" [(ngModel)] = "nickName" placeholder="Nick Name"  value= ""></ion-input>
+      <!-- <ion-input id = "somthing" [(ngModel)] = "locationSelected" placeholder="location"  value= ""></ion-input> -->
+     <!-- <input type="text" [(ngModel)]=""name="" value="" style = "display:none"> -->
+      <!-- <input type="text" [(ngModel)]="showBasicInfoPage"name="" value="" style = "display:none"> -->
+   </ion-item>
+   <ion-item *ngIf="showBasicInfoPage">
+     <ion-label>Mobile</ion-label>
+    <!-- <ion-input placeholder="Nick Name" [(ngModel)]="nName" ></ion-input> -->
+    <ion-input id = "somthing" [(ngModel)] = "phoneNumber" placeholder=" Number"  value= ""></ion-input>
+     <!-- <ion-input id = "somthing" [(ngModel)] = "locationSelected" placeholder="location"  value= ""></ion-input> -->
+    <!-- <input type="text" [(ngModel)]=""name="" value="" style = "display:none"> -->
+     <!-- <input type="text" [(ngModel)]="showBasicInfoPage"name="" value="" style = "display:none"> -->
+  </ion-item>
+   <ion-item *ngIf="showBasicInfoPage">
+   <ion-label>Languages </ion-label>
+   <ion-select [(ngModel)]="languages" multiple="true">
+     <ion-option>Language1 </ion-option>
+     <ion-option>Language2 </ion-option>
+     <ion-option>Language3</ion-option>
+     <ion-option>Language4 </ion-option>
+   </ion-select>
+ </ion-item>
+ <ion-item *ngIf="showBasicInfoPage">
+  <img src="{{pathForImage(lastImage)}}" style="width: 100%" [hidden]="lastImage === null">
+</ion-item>
+  <!-- <h3 [hidden]="lastImage !== null">Please Select Image!</h3> -->
+<ion-item *ngIf="showBasicInfoPage">
+  <ion-buttons>
+    <button ion-button icon-left (click)="presentActionSheet()">
+      <ion-icon name="camera"></ion-icon>Select Image
+    </button>
+    <button ion-button icon-left (click)="uploadImage()" [disabled]="lastImage === null">
+      <ion-icon name="cloud-upload"></ion-icon>Upload
+    </button>
+  </ion-buttons>
+  </ion-item>
+
+<ion-item *ngIf="showBasicInfoPage">
+  <ion-searchbar [(ngModel)]="autocomplete.input" (ionInput)="updateSearchResults()" placeholder="Select Your Location"></ion-searchbar>
+  <ion-list [hidden]="autocompleteItems.length == 0">
+    <ion-item *ngFor="let item of autocompleteItems" tappable (click)="selectSearchResult(item)">
+      {{ item.description }}
+    </ion-item>
+  </ion-list>
+  </ion-item>
+  <ion-item *ngIf="showBasicInfoPage">
+    <ion-label>Lat Lang </ion-label>
+    <ion-input id = "somthing" [(ngModel)] = "locationSelected" placeholder="location"  value= ""></ion-input>
+ </ion-item>
+    <button *ngIf="showBasicInfoPage" class="geolocation-btn" ion-button full (click)="tryGeolocation()"> Try Geolocation </button>
+  <div class="row" #map id='map'></div>
+
+
+
+  <div   *ngIf="!showBasicInfoPage"  style="width : 100% ;height: 8%; margin:0px;padding:0px;"  >
+      <button ion-button [disabled]="showMe" (click)="showBasicInfoPagefun()"  color="secondary"  block  large >Connect</button>
+      <!-- (click)="pageredirection()"  -->
+  </div>
+  <button  *ngIf="showBasicInfoPage" class="geolocation-btn" ion-button full color="secondary" (click)="basicinfo()">Submit </button>
+
+</ion-content>
