@@ -29,6 +29,7 @@ errorMessage: any;
 data:any;
 error:any;
   constructor(public navCtrl: NavController, public navParams: NavParams,public restService: RestProvider) {
+    console.log("crop select page : " + this.restService.userId);
   }
 
   ionViewDidLoad() {
@@ -40,6 +41,8 @@ error:any;
                             {"name": "crop2", "link" : "https://wmswcd.org/wp-content/uploads/2015/04/P1020020-SIO-Cover-Crop-400x400.jpg"},
                             {"name": "crop3", "link" : "https://wmswcd.org/wp-content/uploads/2015/04/P1020020-SIO-Cover-Crop-400x400.jpg"},
                             {"name": "crop4", "link" : "https://wmswcd.org/wp-content/uploads/2015/04/P1020020-SIO-Cover-Crop-400x400.jpg"},
+                            {"name": "crop5", "link" : "https://wmswcd.org/wp-content/uploads/2015/04/P1020020-SIO-Cover-Crop-400x400.jpg"},
+                            {"name": "crop6", "link" : "https://wmswcd.org/wp-content/uploads/2015/04/P1020020-SIO-Cover-Crop-400x400.jpg"}
                         ];
   }
   // cropselect(){
@@ -58,18 +61,20 @@ error:any;
   }
 
   cropselect() {
-    let options = {
-      cropType1: this.croptTypeSelected1
-    };
-    if (options.cropType1 == ' ' || typeof (options.cropType1) == "undefined") {
-      alert('Provide valid info');
-    } else {
-      //console.log( JSON.stringify(options));
-      this.restService.cropSelect(options)
-        .subscribe(
-          resdata => {this.resdata= resdata; console.log("res basicInfo : " + JSON.stringify(this.resdata ));this.  pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
-          error => this.errorMessage = <any>error);
-    }
+    // let options = {
+    //   basicInfoId : this.restService.userId,
+    //   cropType1: this.croptTypeSelected1
+    // };
+    // if (options.cropType1 == ' ' || typeof (options.cropType1) == "undefined") {
+    //   alert('Provide valid info');
+    // } else {
+    //   //console.log( JSON.stringify(options));
+    //   this.restService.cropSelect(options)
+    //     .subscribe(
+    //       resdata => {this.resdata= resdata; console.log("res basicInfo : " + JSON.stringify(this.resdata ));this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
+    //       error => this.errorMessage = <any>error);
+    // }
+    this.pageredirection();
   }
 
 

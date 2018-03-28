@@ -22,7 +22,7 @@ import 'rxjs/Rx';
 export class RestProvider {
 
 
-
+userId:any = '1234';
 
   constructor(public http: HttpClient) {
     console.log('Hello RestProvider Provider');
@@ -64,6 +64,23 @@ export class RestProvider {
                'Content-Type': 'application/json'}
            };
     return this.http.post('http://localhost:8080/api/users/cropSelect', data ,Headers)
+      .map(this.extractData)
+      .catch(this.handleError);
+  };
+
+  connections(data): Observable<string[]> {
+    const Headers = {'headers' : {
+               'Content-Type': 'application/json'}
+           };
+    return this.http.post('http://localhost:8080/api/users/connections', data ,Headers)
+      .map(this.extractData)
+      .catch(this.handleError);
+  };
+  connectionStatus(data): Observable<string[]> {
+    const Headers = {'headers' : {
+               'Content-Type': 'application/json'}
+           };
+    return this.http.post('http://localhost:8080/api/users/connectionStatus', data ,Headers)
       .map(this.extractData)
       .catch(this.handleError);
   };

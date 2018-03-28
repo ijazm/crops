@@ -19,7 +19,6 @@ import { Transfer, TransferObject } from '@ionic-native/transfer';
 import { FilePath } from '@ionic-native/file-path';
 import { Camera } from '@ionic-native/camera';
 import { CropselectPage } from '../../pages/cropselect/cropselect';
-import { LatlngupdatePage } from '../../pages/latlngupdate/latlngupdate';
 
 
 /**
@@ -32,11 +31,11 @@ declare var google: any;
 declare var cordova: any;
 @IonicPage()
 @Component({
-  selector: 'page-basicinfo',
-  templateUrl: 'basicinfo.html',
+  selector: 'page-latlngupdate',
+  templateUrl: 'latlngupdate.html',
 })
-export class BasicinfoPage {
-  @ViewChild('map') mapElement: ElementRef;
+export class LatlngupdatePage {
+  @ViewChild('map1') mapElement: ElementRef;
 
   lastImage: string = null;
   loadingimg: Loading;
@@ -129,14 +128,13 @@ error:any;
   ionViewDidLoad() {
     console.log('ionViewDidLoad BasicinfoPage');
 
-     // this.map = new google.maps.Map(document.getElementById('map'), {
-     //   center: {lat: -34.9011, lng: -56.1645},
-     //   zoom: 15,
-     //   mapTypeId: google.maps.MapTypeId.ROADMAP,
-     //   disableDefaultUI: true
-     // });
-     // this.getUserPosition();
-
+    this.map = new google.maps.Map(document.getElementById('map1'), {
+      center: {lat: -34.9011, lng: -56.1645},
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI: true
+    });
+    this.getUserPosition();
 
 
 
@@ -150,179 +148,35 @@ error:any;
    //
    // });
 
+    // this.getUserPosition();
+
   }
   basicinfo(){
 
-    // let options = {
-    //   nickName : this.nickName,
-    //   language :this.languages,
-    //   imageUrl: "this.imageUrl" ,
-    //   location :  this.locationSelected,
-    //   phoneNumber: this.phoneNumber,
-    //   connections: 'false'
-    // };
-    // if (options.nickName == ' ' || typeof (options.nickName) == "undefined") {
-    //   alert('Provide valid info');
-    // } else {
-    //   this.restService.basicInfo(options)
-    //     .subscribe(
-    //     resdata => {this.resdata= resdata; console.log("res basicInfo : " + this.resdata._id);this.restService.userId=  this.resdata._id ;this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
-    //     error => {this.errorMessage = <any>error; console.log("res basicInfo : " + JSON.stringify(this.errorMessage ));});
-    //
-    // }
-    this.pageredirection();
-  }
+    let options = {
+      nickName : this.nickName,
+      language :this.languages,
+      imageUrl: "this.imageUrl" ,
+      location :  this.locationSelected,
+      phoneNumber: this.phoneNumber,
+      connections: 'false'
+    };
+    if (options.nickName == ' ' || typeof (options.nickName) == "undefined") {
+      alert('Provide valid info');
+    } else {
+      this.restService.basicInfo(options)
+        .subscribe(
+        resdata => {this.resdata= resdata; console.log("res basicInfo : " + this.resdata._id);this.restService.userId=  this.resdata._id ;this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
+        error => {this.errorMessage = <any>error; console.log("res basicInfo : " + JSON.stringify(this.errorMessage ));});
 
-  // login() {
-  //   let options = {
-  //     email: this.email,
-  //     password: this.password
-  //   };
-  //   if (options.email == ' ' || typeof (options.email) == "undefined") {
-  //     alert('Provide valid info');
-  //   } else {
-  //     //console.log( JSON.stringify(options));
-  //     this.restService.loginAuth(options)
-  //       .subscribe(
-  //       resdata => { this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
-  //       error => this.errorMessage = <any>error);
-  //   }
-  // }
+    }
+  }
 
 showBasicInfoPagefun(){
   this.showBasicInfoPage=true;
 }
 
-  pageredirection(){
-    this.navCtrl.push(LatlngupdatePage);
-  }
 
-//////////////////////image uploading /////////////////////////////////////////
-public presentActionSheet() {
-    let actionSheet = this.actionSheetCtrl.create({
-      title: 'Select Image Source',
-      buttons: [
-        {
-          text: 'Load from Library',
-          handler: () => {
-            this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
-          }
-        },
-        {
-          text: 'Use Camera',
-          handler: () => {
-            this.takePicture(this.camera.PictureSourceType.CAMERA);
-          }
-        },
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        }
-      ]
-    });
-    actionSheet.present();
-  }
-
-public takePicture(sourceType) {
-  // Create options for the Camera Dialog
-  var options = {
-    quality: 100,
-    sourceType: sourceType,
-    saveToPhotoAlbum: false,
-    correctOrientation: true
-  };
-
-  // Get the data of an image
-  this.camera.getPicture(options).then((imagePath) => {
-    // Special handling for Android library
-    if (this.platform.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
-      this.filePath.resolveNativePath(imagePath)
-        .then(filePath => {
-          let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
-          let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
-          this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-        });
-    } else {
-      var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-      var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-      this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-    }
-  }, (err) => {
-    this.presentToast('Error while selecting image.');
-  });
-}
-
-
-
-private createFileName() {
-  var d = new Date(),
-  n = d.getTime(),
-  newFileName =  n + ".jpg";
-  return newFileName;
-}
-
-// Copy the image to a local folder
-private copyFileToLocalDir(namePath, currentName, newFileName) {
-  this.file.copyFile(namePath, currentName, cordova.file.dataDirectory, newFileName).then(success => {
-    this.lastImage = newFileName;
-  }, error => {
-    this.presentToast('Error while storing file.');
-  });
-}
-
-private presentToast(text) {
-  let toast = this.toastCtrl.create({
-    message: text,
-    duration: 3000,
-    position: 'top'
-  });
-  toast.present();
-}
-
-// Always get the accurate path to your apps folder
-public pathForImage(img) {
-  if (img === null) {
-    return 'http://www.alrisalahschool.com/wp-content/uploads/2017/06/profile-image-default-200x200.jpg';
-  } else {
-    return cordova.file.dataDirectory + img;
-  }
-}
-
-public uploadImage() {
-  // Destination URL
-  var url = "http://localhost:8100/ionic-lab/";
-
-  // File for Upload
-  var targetPath = this.pathForImage(this.lastImage);
-
-  // File name only
-  var filename = this.lastImage;
-this.imageUrl = url + targetPath  +filename ;
-  var options = {
-    fileKey: "file",
-    fileName: filename,
-    chunkedMode: false,
-    mimeType: "multipart/form-data",
-    params : {'fileName': filename}
-  };
-
-  const fileTransfer: TransferObject = this.transfer.create();
-
-  this.loadingimg = this.loadingCtrl.create({
-    content: 'Uploading...',
-  });
-  this.loadingimg.present();
-
-  // Use the FileTransfer to upload the image
-  fileTransfer.upload(targetPath, url, options).then(data => {
-    this.loadingimg.dismissAll()
-    this.presentToast('Image succesful uploaded.');
-  }, err => {
-    this.loadingimg.dismissAll()
-    this.presentToast('Error while uploading file.');
-  });
-}
-//////////////////////image uploading /////////////////////////////////////////
 
   selectlocation(latLng){
 
@@ -349,6 +203,7 @@ this.imageUrl = url + targetPath  +filename ;
         lat: resp.coords.latitude,
         lng: resp.coords.longitude
       };
+      this.locationSelected = JSON.stringify (pos);
       // console.logo(pos);
       let marker = new google.maps.Marker({
         position: pos,
@@ -397,6 +252,7 @@ this.imageUrl = url + targetPath  +filename ;
           position: results[0].geometry.location,
           map: this.map
         });
+          this.locationSelected = JSON.stringify (results[0].geometry.location);
         this.markers.push(marker);
         this.map.setCenter(results[0].geometry.location);
       }
@@ -519,6 +375,7 @@ this.imageUrl = url + targetPath  +filename ;
 
           console.log(pos);
           this.addMap(pos.coords.latitude,pos.coords.longitude);
+          this.locationSelected = JSON.stringify ({ "lat" : pos.coords.latitude, "lng" : pos.coords.longitude });
 
       },(err : PositionError)=>{
           console.log("error : " + err.message);
@@ -526,5 +383,9 @@ this.imageUrl = url + targetPath  +filename ;
       })
   }
 
+
+  pageredirection(){
+    this.navCtrl.push(CropselectPage);
+  }
 
 }

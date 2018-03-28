@@ -15,6 +15,7 @@ import { BasicinfoPage } from '../pages/basicinfo/basicinfo';
 import { CropselectPage } from '../pages/cropselect/cropselect';
 import { ConnectionsPage } from '../pages/connections/connections';
 import { ProfiledashboardPage } from '../pages/profiledashboard/profiledashboard';
+import { LatlngupdatePage } from '../pages/latlngupdate/latlngupdate';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -46,7 +47,8 @@ import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage
     BasicinfoPage,
     CropselectPage,
     ConnectionsPage,
-    ProfiledashboardPage
+    ProfiledashboardPage,
+    LatlngupdatePage
   ],
   imports: [
     BrowserModule,
@@ -67,7 +69,8 @@ import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage
     BasicinfoPage,
     CropselectPage,
     ConnectionsPage,
-    ProfiledashboardPage
+    ProfiledashboardPage,
+    LatlngupdatePage
   ],
   providers: [
     StatusBar,
@@ -82,7 +85,6 @@ import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage
     Camera,
     FilePath,
     SecureStorage
-
   ]
 })
 export class AppModule { }

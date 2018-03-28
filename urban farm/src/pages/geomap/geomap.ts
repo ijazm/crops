@@ -1,8 +1,8 @@
-import { Component, ViewChild, ElementRef  } from '@angular/core';
-import { IonicPage, NavController, NavParams,Platform } from 'ionic-angular';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 // import { Geolocation } from '@ionic-native/geolocation';
 import { GoogleMaps, GoogleMap, GoogleMapsEvent, LatLng, CameraPosition, MarkerOptions, Marker } from '@ionic-native/google-maps';
-import { Geolocation ,GeolocationOptions ,Geoposition ,PositionError } from '@ionic-native/geolocation';
+import { Geolocation, GeolocationOptions, Geoposition, PositionError } from '@ionic-native/geolocation';
 
 import { BasicinfoPage } from '../../pages/basicinfo/basicinfo';
 
@@ -25,47 +25,39 @@ export class GeomapPage {
   @ViewChild('map') mapElement: ElementRef;
   map: any;
 
-currentPos : Geoposition;
-options : GeolocationOptions;
-places : Array<any> ;
-showMe:any = true;
-searchFor:any = "Farmers and crops";
+  currentPos: Geoposition;
+  options: GeolocationOptions;
+  places: Array<any>;
+  showMe: any = true;
+  searchFor: any = "Farmers and crops";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public platform: Platform, private geolocation: Geolocation, private googleMaps: GoogleMaps) {
     platform.ready().then(() => {
-    //this.loadMap();
-    // this.searchFor = 'map';
-    // this.getUserPosition();
-   //  this.google.maps.event.addListener(map, 'click', function(event) {
-   //   geocoder.geocode({
-   //     'latLng': event.latLng
-   //   }, function(results, status) {
-   //     if (status == google.maps.GeocoderStatus.OK) {
-   //       if (results[0]) {
-   //         alert(results[0].formatted_address);
-   //       }
-   //     }
-   //   });
-   // });
-  });
-   }
+    });
+  }
 
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad GeomapPage');
-     // this.initMap();
-     //this.loadMap();
-       // this.searchFor = 'map';
-           this.getUserPosition();
+
+    let mapOptions = {
+      center: { lat: -34.9011, lng: -56.1645 },
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI: true
+    }
+
+    this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    this.getUserPosition();
   }
 
 
-addMarker(){
+  addMarker() {
 
     let marker = new google.maps.Marker({
-    map: this.map,
-    animation: google.maps.Animation.DROP,
-    position: this.map.getCenter()
+      map: this.map,
+      animation: google.maps.Animation.DROP,
+      position: this.map.getCenter()
 
     });
     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
@@ -73,99 +65,96 @@ addMarker(){
 
     let content = "<p>This is your current position !</p>";
     let infoWindow = new google.maps.InfoWindow({
-    content: content
+      content: content
     });
 
     google.maps.event.addListener(marker, 'click', () => {
-    infoWindow.open(this.map, marker);
+      infoWindow.open(this.map, marker);
     });
 
-}
+  }
 
 
-getRestaurants(latLng){
+  getRestaurants(latLng) {
     var service = new google.maps.places.PlacesService(this.map);
     var request = {
-        location : latLng,
-        radius : 800 ,
-        types: [this.searchFor],
-        center: latLng,
-        disableDefaultUI: true
+      location: latLng,
+      radius: 800,
+      types: [this.searchFor],
+      center: latLng,
+      disableDefaultUI: true
     };
-    return new Promise((resolve,reject)=>{
-        service.nearbySearch(request,function(results,status){
-            if(status === google.maps.places.PlacesServiceStatus.OK)
-            {
-                resolve(results);
-            }else
-            {
-                reject(status);
-            }
+    return new Promise((resolve, reject) => {
+      service.nearbySearch(request, function(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          resolve(results);
+        } else {
+          reject(status);
+        }
 
-        });
+      });
     });
 
-}
-show() {
-  this.showMe = false;
-}
-createMarker(place){
+  }
+  show() {
+    this.showMe = true;
+  }
+  createMarker(place) {
     let marker = new google.maps.Marker({
-    map: this.map,
-    animation: google.maps.Animation.DROP,
-    position: place.geometry.location
+      map: this.map,
+      animation: google.maps.Animation.DROP,
+      position: place.geometry.location
     });
     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
     marker.addListener('click', () => {
       //this.someProperty = Math.random();
-        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
-        this.show();
+      marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+      this.showMe= false;
     });
-}
-addMap(lat,long){
+  }
+  addMap(lat, long) {
 
     let latLng = new google.maps.LatLng(lat, long);
 
     let mapOptions = {
-    center: latLng,
-    zoom: 14,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    disableDefaultUI: true
+      center: latLng,
+      zoom: 14,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI: true
     }
 
-    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+    this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    this.getRestaurants(latLng).then((results : Array<any>)=>{
-        this.places = results;
-        for(let i = 0 ;i < results.length ; i++)
-        {
-          // if(this.searchFor != " "){
-            this.createMarker(results[i]);
-         }
-    },(status)=>console.log(status));
+    this.getRestaurants(latLng).then((results: Array<any>) => {
+      this.places = results;
+      for (let i = 0; i < results.length; i++) {
+        // if(this.searchFor != " "){
+        this.createMarker(results[i]);
+      }
+    }, (status) => console.log(status));
 
     this.addMarker();
 
-}
+  }
 
-getUserPosition(){
-  console.log("getting user position");
+  getUserPosition() {
+    console.log("getting user position");
     this.options = {
-    enableHighAccuracy : true
+      enableHighAccuracy: true
     };
-    this.geolocation.getCurrentPosition(this.options).then((pos : Geoposition) => {
+    this.geolocation.getCurrentPosition(this.options).then((pos: Geoposition) => {
 
-        this.currentPos = pos;
+      this.currentPos = pos;
 
-        console.log(pos);
-        this.addMap(pos.coords.latitude,pos.coords.longitude);
+      console.log(pos);
+      this.addMap(pos.coords.latitude, pos.coords.longitude);
 
-    },(err : PositionError)=>{
-        console.log("error : " + err.message);
-    ;
+    }, (err: PositionError) => {
+      console.log("error : " + err.message);
+      ;
     })
-}
-  pageredirection(){
+  }
+  pageredirection() {
     this.navCtrl.push(BasicinfoPage);
   }
 

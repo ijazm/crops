@@ -1,25 +1,15 @@
 <ion-header>
-<ion-navbar>
+  <ion-navbar>
     <ion-title>
-      <ion-searchbar
-       [(ngModel)]="searchFor"
-       [showCancelButton]="shouldShowCancel"
-       (change) = "getUserPosition()"
-       (ionCancel)="onCancel($event)">
-     </ion-searchbar>
-        <!-- <input type="text" name="" value=" " style = "z-index= 1"><button ion-button   color="danger" (click)="getUserPosition()" block  large padding style = "z-index:9999">Google Login</button> -->
+      <ion-searchbar [(ngModel)]="searchFor" [showCancelButton]="shouldShowCancel" (change)="getUserPosition()" (ionCancel)="onCancel($event)">
+      </ion-searchbar>
+      <!-- <input type="text" name="" value=" " style = "z-index= 1"><button ion-button   color="danger" (click)="getUserPosition()" block  large padding style = "z-index:9999">Google Login</button> -->
     </ion-title>
-</ion-navbar>
+  </ion-navbar>
 </ion-header>
 
-<ion-content >
-
-
-<div #map id="map" style="width : 100% ;height: 90%; margin:0px;padding:0px;" >
-</div>
-<div   style="width : 100% ;height: 8%; margin:0px;padding:0px;" >
-    <button ion-button [disabled]="showMe"  color="secondary" (click)="pageredirection()"  block  large >Connect</button>
-</div>
+<ion-content>
+  <div #map id="map" style="width : 100% ;height: 100%; margin:0px;padding:0px;">
+  </div>
+  <button id="btn" ion-button [hidden]="showMe" color="secondary" (click)="pageredirection()" block>Sign Up to Urbanfarm</button>
 </ion-content>
-
-  <!-- " -->
