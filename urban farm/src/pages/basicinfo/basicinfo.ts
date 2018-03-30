@@ -153,23 +153,21 @@ error:any;
   }
   basicinfo(){
 
-    // let options = {
-    //   nickName : this.nickName,
-    //   language :this.languages,
-    //   imageUrl: "this.imageUrl" ,
-    //   location :  this.locationSelected,
-    //   phoneNumber: this.phoneNumber,
-    //   connections: 'false'
-    // };
-    // if (options.nickName == ' ' || typeof (options.nickName) == "undefined") {
-    //   alert('Provide valid info');
-    // } else {
-    //   this.restService.basicInfo(options)
-    //     .subscribe(
-    //     resdata => {this.resdata= resdata; console.log("res basicInfo : " + this.resdata._id);this.restService.userId=  this.resdata._id ;this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
-    //     error => {this.errorMessage = <any>error; console.log("res basicInfo : " + JSON.stringify(this.errorMessage ));});
-    //
-    // }
+    let options = {
+      nickName : this.nickName,
+      imageUrl: "this.imageUrl" ,
+      phoneNumber: this.phoneNumber,
+      connections: 'false'
+    };
+    if (options.nickName == ' ' || typeof (options.nickName) == "undefined") {
+      alert('Provide valid info');
+    } else {
+      this.restService.basicInfo(options)
+        .subscribe(
+        resdata => {this.resdata= resdata; console.log("res basicInfo : " + this.resdata._id);this.restService.userId=  this.resdata._id ;this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
+        error => {this.errorMessage = <any>error; console.log("res basicInfo : " + JSON.stringify(this.errorMessage ));});
+
+    }
     this.pageredirection();
   }
 
@@ -323,208 +321,208 @@ this.imageUrl = url + targetPath  +filename ;
   });
 }
 //////////////////////image uploading /////////////////////////////////////////
-
-  selectlocation(latLng){
-
-    this.locationSelected =  JSON.stringify(latLng);
-    this.clearMarkers();
-    let marker = new google.maps.Marker({
-      position: latLng,
-      map: this.map
-    });
-    this.markers.push(marker);
-    // this.map.setCenter(latLng);
-      // let marker = new google.maps.Marker({
-      //   position: latLng,
-      //   map: map
-      // });
-      // this.map.panTo(latLng);
-  }
-
-  tryGeolocation(){
-    this.loading.present();
-    this.clearMarkers();//remove previous markers
-    this.geolocation.getCurrentPosition().then((resp) => {
-      let pos = {
-        lat: resp.coords.latitude,
-        lng: resp.coords.longitude
-      };
-      // console.logo(pos);
-      let marker = new google.maps.Marker({
-        position: pos,
-        map: this.map,
-        title: 'I am here!'
-      });
-      this.markers.push(marker);
-      this.map.setCenter(pos);
-      this.loadingimg.dismiss();
-
-    }).catch((error) => {
-      console.log('Error getting location', error);
-      this.loading.dismiss();
-    });
-  }
-
-  updateSearchResults(){
-    if (this.autocomplete.input == '') {
-      this.autocompleteItems = [];
-      return;
-    }
-    this.GoogleAutocomplete.getPlacePredictions({ input: this.autocomplete.input },
-      (predictions, status) => {
-        this.autocompleteItems = [];
-        if(predictions){
-          this.zone.run(() => {
-            predictions.forEach((prediction) => {
-              this.autocompleteItems.push(prediction);
-            });
-          });
-        }
-    });
-  }
-
-  selectSearchResult(item){
-    this.clearMarkers();
-    this.autocompleteItems = [];
-
-    this.geocoder.geocode({'placeId': item.place_id}, (results, status) => {
-      if(status === 'OK' && results[0]){
-        // let position = {
-        //     lat: results[0].geometry.location.lat,
-        //     lng: results[0].geometry.location.lng
-        // };
-        let marker = new google.maps.Marker({
-          position: results[0].geometry.location,
-          map: this.map
-        });
-        this.markers.push(marker);
-        this.map.setCenter(results[0].geometry.location);
-      }
-    })
-  }
-
-  clearMarkers(){
-    for (var i = 0; i < this.markers.length; i++) {
-      console.log(this.markers[i])
-      this.markers[i].setMap(null);
-    }
-    this.markers = [];
-  }
-  /////////////////////////////first page ///////////////////////
-  addMarker(){
-
-      let marker = new google.maps.Marker({
-      map: this.map,
-      animation: google.maps.Animation.DROP,
-      position: this.map.getCenter()
-
-      });
-      marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
-
-
-      let content = "<p>This is your current position !</p>";
-      let infoWindow = new google.maps.InfoWindow({
-      content: content
-      });
-
-      google.maps.event.addListener(marker, 'click', () => {
-      infoWindow.open(this.map, marker);
-      });
-
-  }
-
-
-  getRestaurants(latLng){
-      var service = new google.maps.places.PlacesService(this.map);
-      var request = {
-          location : latLng,
-          radius : 800 ,
-          types: [this.searchFor],
-          center: latLng,
-          disableDefaultUI: true
-      };
-      return new Promise((resolve,reject)=>{
-          service.nearbySearch(request,function(results,status){
-              if(status === google.maps.places.PlacesServiceStatus.OK)
-              {
-                  resolve(results);
-              }else
-              {
-                  reject(status);
-              }
-
-          });
-      });
-
-  }
-  showConnect() {
-    this.showMe = false;
-  }
-  createMarker(place){
-      let marker = new google.maps.Marker({
-      map: this.map,
-      animation: google.maps.Animation.DROP,
-      position: place.geometry.location
-      });
-      marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
-      marker.addListener('click', () => {
-        //this.someProperty = Math.random();
-          marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
-          this.showConnect();
-      });
-  }
-  addMap(lat,long){
-
-      let latLng = new google.maps.LatLng(lat, long);
-
-      let mapOptions = {
-      center: latLng,
-      zoom: 14,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      disableDefaultUI: true
-      }
-
-      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-      // this.map = new google.maps.Map(  document.getElementById('map'), mapOptions);////to append the locations
-      this.map.addListener('click', (e)=> {
-         // this.map.Marker.remove();
-         this.locationSelected = JSON.stringify(e.latLng);
-        this.selectlocation(e.latLng);
-        // alert(this.locationSelected);
-     });
-
-
-
-      this.getRestaurants(latLng).then((results : Array<any>)=>{
-          this.places = results;
-          for(let i = 0 ;i < results.length ; i++)
-          {
-            // if(this.searchFor != " "){
-              this.createMarker(results[i]);
-           }
-      },(status)=>console.log(status));
-
-      this.addMarker();
-
-  }
-
-  getUserPosition(){
-    console.log("getting user position");
-      this.options = {
-      enableHighAccuracy : true
-      };
-      this.geolocation.getCurrentPosition(this.options).then((pos : Geoposition) => {
-
-          this.currentPos = pos;
-
-          console.log(pos);
-          this.addMap(pos.coords.latitude,pos.coords.longitude);
-
-      },(err : PositionError)=>{
-          console.log("error : " + err.message);
-      ;
-      })
-  }
+  //
+  // selectlocation(latLng){
+  //
+  //   this.locationSelected =  JSON.stringify(latLng);
+  //   this.clearMarkers();
+  //   let marker = new google.maps.Marker({
+  //     position: latLng,
+  //     map: this.map
+  //   });
+  //   this.markers.push(marker);
+  //   // this.map.setCenter(latLng);
+  //     // let marker = new google.maps.Marker({
+  //     //   position: latLng,
+  //     //   map: map
+  //     // });
+  //     // this.map.panTo(latLng);
+  // }
+  //
+  // tryGeolocation(){
+  //   this.loading.present();
+  //   this.clearMarkers();//remove previous markers
+  //   this.geolocation.getCurrentPosition().then((resp) => {
+  //     let pos = {
+  //       lat: resp.coords.latitude,
+  //       lng: resp.coords.longitude
+  //     };
+  //     // console.logo(pos);
+  //     let marker = new google.maps.Marker({
+  //       position: pos,
+  //       map: this.map,
+  //       title: 'I am here!'
+  //     });
+  //     this.markers.push(marker);
+  //     this.map.setCenter(pos);
+  //     this.loadingimg.dismiss();
+  //
+  //   }).catch((error) => {
+  //     console.log('Error getting location', error);
+  //     this.loading.dismiss();
+  //   });
+  // }
+  //
+  // updateSearchResults(){
+  //   if (this.autocomplete.input == '') {
+  //     this.autocompleteItems = [];
+  //     return;
+  //   }
+  //   this.GoogleAutocomplete.getPlacePredictions({ input: this.autocomplete.input },
+  //     (predictions, status) => {
+  //       this.autocompleteItems = [];
+  //       if(predictions){
+  //         this.zone.run(() => {
+  //           predictions.forEach((prediction) => {
+  //             this.autocompleteItems.push(prediction);
+  //           });
+  //         });
+  //       }
+  //   });
+  // }
+  //
+  // selectSearchResult(item){
+  //   this.clearMarkers();
+  //   this.autocompleteItems = [];
+  //
+  //   this.geocoder.geocode({'placeId': item.place_id}, (results, status) => {
+  //     if(status === 'OK' && results[0]){
+  //       // let position = {
+  //       //     lat: results[0].geometry.location.lat,
+  //       //     lng: results[0].geometry.location.lng
+  //       // };
+  //       let marker = new google.maps.Marker({
+  //         position: results[0].geometry.location,
+  //         map: this.map
+  //       });
+  //       this.markers.push(marker);
+  //       this.map.setCenter(results[0].geometry.location);
+  //     }
+  //   })
+  // }
+  //
+  // clearMarkers(){
+  //   for (var i = 0; i < this.markers.length; i++) {
+  //     console.log(this.markers[i])
+  //     this.markers[i].setMap(null);
+  //   }
+  //   this.markers = [];
+  // }
+  // /////////////////////////////first page ///////////////////////
+  // addMarker(){
+  //
+  //     let marker = new google.maps.Marker({
+  //     map: this.map,
+  //     animation: google.maps.Animation.DROP,
+  //     position: this.map.getCenter()
+  //
+  //     });
+  //     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+  //
+  //
+  //     let content = "<p>This is your current position !</p>";
+  //     let infoWindow = new google.maps.InfoWindow({
+  //     content: content
+  //     });
+  //
+  //     google.maps.event.addListener(marker, 'click', () => {
+  //     infoWindow.open(this.map, marker);
+  //     });
+  //
+  // }
+  //
+  //
+  // getRestaurants(latLng){
+  //     var service = new google.maps.places.PlacesService(this.map);
+  //     var request = {
+  //         location : latLng,
+  //         radius : 800 ,
+  //         types: [this.searchFor],
+  //         center: latLng,
+  //         disableDefaultUI: true
+  //     };
+  //     return new Promise((resolve,reject)=>{
+  //         service.nearbySearch(request,function(results,status){
+  //             if(status === google.maps.places.PlacesServiceStatus.OK)
+  //             {
+  //                 resolve(results);
+  //             }else
+  //             {
+  //                 reject(status);
+  //             }
+  //
+  //         });
+  //     });
+  //
+  // }
+  // showConnect() {
+  //   this.showMe = false;
+  // }
+  // createMarker(place){
+  //     let marker = new google.maps.Marker({
+  //     map: this.map,
+  //     animation: google.maps.Animation.DROP,
+  //     position: place.geometry.location
+  //     });
+  //     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+  //     marker.addListener('click', () => {
+  //       //this.someProperty = Math.random();
+  //         marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+  //         this.showConnect();
+  //     });
+  // }
+  // addMap(lat,long){
+  //
+  //     let latLng = new google.maps.LatLng(lat, long);
+  //
+  //     let mapOptions = {
+  //     center: latLng,
+  //     zoom: 14,
+  //     mapTypeId: google.maps.MapTypeId.ROADMAP,
+  //     disableDefaultUI: true
+  //     }
+  //
+  //     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+  //     // this.map = new google.maps.Map(  document.getElementById('map'), mapOptions);////to append the locations
+  //     this.map.addListener('click', (e)=> {
+  //        // this.map.Marker.remove();
+  //        this.locationSelected = JSON.stringify(e.latLng);
+  //       this.selectlocation(e.latLng);
+  //       // alert(this.locationSelected);
+  //    });
+  //
+  //
+  //
+  //     this.getRestaurants(latLng).then((results : Array<any>)=>{
+  //         this.places = results;
+  //         for(let i = 0 ;i < results.length ; i++)
+  //         {
+  //           // if(this.searchFor != " "){
+  //             this.createMarker(results[i]);
+  //          }
+  //     },(status)=>console.log(status));
+  //
+  //     this.addMarker();
+  //
+  // }
+  //
+  // getUserPosition(){
+  //   console.log("getting user position");
+  //     this.options = {
+  //     enableHighAccuracy : true
+  //     };
+  //     this.geolocation.getCurrentPosition(this.options).then((pos : Geoposition) => {
+  //
+  //         this.currentPos = pos;
+  //
+  //         console.log(pos);
+  //         this.addMap(pos.coords.latitude,pos.coords.longitude);
+  //
+  //     },(err : PositionError)=>{
+  //         console.log("error : " + err.message);
+  //     ;
+  //     })
+  // }
 
 
 }

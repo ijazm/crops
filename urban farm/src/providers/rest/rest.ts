@@ -23,6 +23,7 @@ export class RestProvider {
 
 
 userId:any = '1234';
+hostNamePort: any = "http://localhost:8080";
 
   constructor(public http: HttpClient) {
     console.log('Hello RestProvider Provider');
@@ -38,7 +39,7 @@ userId:any = '1234';
     const Headers = {'headers' : {
                'Content-Type': 'application/json'}
            };
-    return this.http.post('http://localhost:8080/api/users', data ,Headers)
+    return this.http.post(this.hostNamePort+'/api/users', data ,Headers)
       .map(this.extractData)
       .catch(this.handleError);
   };
@@ -46,7 +47,7 @@ userId:any = '1234';
     const Headers = {'headers' : {
                'Content-Type': 'application/json'}
            };
-    return this.http.post('http://localhost:8080/api/users/signup', data ,Headers)
+    return this.http.post(this.hostNamePort+'/api/users/signup', data ,Headers)
       .map(this.extractData)
       .catch(this.handleError);
   };
@@ -55,7 +56,7 @@ userId:any = '1234';
     const Headers = {'headers' : {
                'Content-Type': 'application/json'}
            };
-    return this.http.post('http://localhost:8080/api/users/basicInfo', data ,Headers)
+    return this.http.post(this.hostNamePort+'/api/users/basicInfo', data ,Headers)
       .map(this.extractData)
       .catch(this.handleError);
   };
@@ -63,7 +64,7 @@ userId:any = '1234';
     const Headers = {'headers' : {
                'Content-Type': 'application/json'}
            };
-    return this.http.post('http://localhost:8080/api/users/cropSelect', data ,Headers)
+    return this.http.post(this.hostNamePort+'/api/users/cropSelect', data ,Headers)
       .map(this.extractData)
       .catch(this.handleError);
   };
@@ -72,7 +73,7 @@ userId:any = '1234';
     const Headers = {'headers' : {
                'Content-Type': 'application/json'}
            };
-    return this.http.post('http://localhost:8080/api/users/connections', data ,Headers)
+    return this.http.post(this.hostNamePort+'/api/users/connections', data ,Headers)
       .map(this.extractData)
       .catch(this.handleError);
   };
@@ -80,7 +81,31 @@ userId:any = '1234';
     const Headers = {'headers' : {
                'Content-Type': 'application/json'}
            };
-    return this.http.post('http://localhost:8080/api/users/connectionStatus', data ,Headers)
+    return this.http.post(this.hostNamePort+'/api/users/connectionStatus', data ,Headers)
+      .map(this.extractData)
+      .catch(this.handleError);
+  };
+  allUserData(data): Observable<string[]> {
+    const Headers = {'headers' : {
+               'Content-Type': 'application/json'}
+           };
+    return this.http.post(this.hostNamePort+'/api/users/all', data ,Headers)
+      .map(this.extractData)
+      .catch(this.handleError);
+  };
+  locationUpdate(data): Observable<string[]> {
+    const Headers = {'headers' : {
+               'Content-Type': 'application/json'}
+           };
+    return this.http.post(this.hostNamePort+'/api/users/locationUpdate', data ,Headers)
+      .map(this.extractData)
+      .catch(this.handleError);
+  };
+  geoLocationFinder(data): Observable<string[]> {
+    const Headers = {'headers' : {
+               'Content-Type': 'application/json'}
+           };
+    return this.http.post(this.hostNamePort+'/api/geoLocationFinder', data ,Headers)
       .map(this.extractData)
       .catch(this.handleError);
   };

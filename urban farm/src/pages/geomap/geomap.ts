@@ -5,6 +5,7 @@ import { GoogleMaps, GoogleMap, GoogleMapsEvent, LatLng, CameraPosition, MarkerO
 import { Geolocation, GeolocationOptions, Geoposition, PositionError } from '@ionic-native/geolocation';
 
 import { BasicinfoPage } from '../../pages/basicinfo/basicinfo';
+import { RestProvider } from '../../providers/rest/rest';
 
 
 
@@ -30,8 +31,21 @@ export class GeomapPage {
   places: Array<any>;
   showMe: any = true;
   searchFor: any = "Farmers and crops";
+  allUsersDetails:any;
+  sortedNearByDealer : any ;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public platform: Platform, private geolocation: Geolocation, private googleMaps: GoogleMaps) {
+  resdata: any;
+  errorMessage: any;
+  // private secureStorage:SecureStorage;
+  data:any;
+  error:any;
+
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public platform: Platform,
+              private geolocation: Geolocation,
+              private googleMaps: GoogleMaps,
+              public restService: RestProvider) {
     platform.ready().then(() => {
     });
   }
@@ -39,6 +53,7 @@ export class GeomapPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad GeomapPage');
+    // this.allUsersData();
 
     let mapOptions = {
       center: { lat: -34.9011, lng: -56.1645 },
@@ -48,10 +63,46 @@ export class GeomapPage {
     }
 
     this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    this.getUserPosition();
+     this.getUserPosition();
   }
 
+  // allUsersData(){
+  //   let options = {
+  //     nickName : "empty object"
+  //   };
+  //   this.restService.allUserData(options)
+  //       .subscribe(
+  //       resdata => {this.allUsersDetails= resdata;  console.log(JSON.stringify(this.allUsersDetails));   },// this.locateMarkers(this.allUsersDetails);console.log(JSON.stringify(this.allUsersDetails)){ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
+  //       error => {this.errorMessage = <any>error; console.log("res basicInfo : " + JSON.stringify(this.errorMessage ));});
+  //       // console.log("rrrrrrrrrrrrrrrr : " +this.allUsersDetails);
+  //
+  //
+  // }
 
+  // locateMarkers(compleDetails){
+  // this.allUsersDetails =  compleDetails  ;
+  // let x = compleDetails[0]['Location'][0];
+  // this.getDistanceFromLatLonInKm("-34.898104932269035", "-56.16222548675535",  x.lat, x.lng)
+  //
+  // }
+  //
+  //  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  //   var R = 6371; // Radius of the earth in km
+  //   var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
+  //   var dLon = this.deg2rad(lon2-lon1);
+  //   var a =
+  //     Math.sin(dLat/2) * Math.sin(dLat/2) +
+  //     Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+  //     Math.sin(dLon/2) * Math.sin(dLon/2)
+  //     ;
+  //   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  //   var d = R * c; // Distance in km
+  //   // alert(Math.round(Number(d)));
+  // }
+  //
+  //  deg2rad(deg) {
+  //   return deg * (Math.PI/180)
+  // }
   addMarker() {
 
     let marker = new google.maps.Marker({
@@ -63,7 +114,7 @@ export class GeomapPage {
     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
 
 
-    let content = "<p>This is your current position !</p>";
+    let content = "<p><b>My Location</b></p>";
     let infoWindow = new google.maps.InfoWindow({
       content: content
     });
@@ -100,10 +151,11 @@ export class GeomapPage {
     this.showMe = true;
   }
   createMarker(place) {
+    alert(JSON.stringify( place));
     let marker = new google.maps.Marker({
       map: this.map,
       animation: google.maps.Animation.DROP,
-      position: place.geometry.location
+      position: place
     });
     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
     marker.addListener('click', () => {
@@ -111,6 +163,11 @@ export class GeomapPage {
       marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
       this.showMe= false;
     });
+     this.map.addListener('click' , () =>{
+       // alert("map click");
+       marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+       this.showMe= true;
+     });
   }
   addMap(lat, long) {
 
@@ -118,23 +175,37 @@ export class GeomapPage {
 
     let mapOptions = {
       center: latLng,
-      zoom: 14,
+      zoom: 10,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       disableDefaultUI: true
     }
 
     this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    let options = {
+      location :latLng,
+      distKm: 50
+    };
 
-    this.getRestaurants(latLng).then((results: Array<any>) => {
-      this.places = results;
-      for (let i = 0; i < results.length; i++) {
-        // if(this.searchFor != " "){
-        this.createMarker(results[i]);
-      }
-    }, (status) => console.log(status));
+    this.restService.geoLocationFinder(options)
+      .subscribe(
+      resdata => {
+        this.sortedNearByDealer = resdata;
+        this.custmarker(this.sortedNearByDealer);
+      },
+      error => { this.errorMessage = <any>error; console.log("sortedNearByDealer : " + JSON.stringify(this.errorMessage)); });
 
-    this.addMarker();
 
+  }
+
+  custmarker(val){
+    for (let i = 0; i <  val.length; i++) {
+    let latitude  = val[i].Location[0].coordinates[0] ;
+    let Longitude  = val[i].Location[0].coordinates[1] ;
+      let pos = { lat : latitude  , lng  : Longitude } ;
+      // alert(JSON.stringify(pos));
+       this.createMarker(pos);
+    }
+this.addMarker();
   }
 
   getUserPosition() {

@@ -128,13 +128,22 @@ error:any;
   ionViewDidLoad() {
     console.log('ionViewDidLoad BasicinfoPage');
 
-    this.map = new google.maps.Map(document.getElementById('map1'), {
+    this.map = new google.maps.Map(this.mapElement.nativeElement, {
       center: {lat: -34.9011, lng: -56.1645},
       zoom: 15,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       disableDefaultUI: true
     });
-    this.getUserPosition();
+      this.locationSelected = {lat: 0, lng: 0};
+     // this.locationSelected = {lat: 0, lng: 0};
+    this.map.addListener('click', (e)=> {
+       // this.map.Marker.remove();
+       this.locationSelected = e.latLng ;
+       // this.locationSelected = {lat: 0, lng: 0};
+      this.selectlocation(e.latLng);
+      // alert(this.locationSelected);
+   });
+    // this.getUserPosition();
 
 
 
@@ -151,25 +160,19 @@ error:any;
     // this.getUserPosition();
 
   }
-  basicinfo(){
+  latLngUpdate(){
 
     let options = {
-      nickName : this.nickName,
       language :this.languages,
-      imageUrl: "this.imageUrl" ,
       location :  this.locationSelected,
-      phoneNumber: this.phoneNumber,
-      connections: 'false'
+      basicInfoId : this.restService.userId,
     };
-    if (options.nickName == ' ' || typeof (options.nickName) == "undefined") {
-      alert('Provide valid info');
-    } else {
-      this.restService.basicInfo(options)
-        .subscribe(
-        resdata => {this.resdata= resdata; console.log("res basicInfo : " + this.resdata._id);this.restService.userId=  this.resdata._id ;this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
-        error => {this.errorMessage = <any>error; console.log("res basicInfo : " + JSON.stringify(this.errorMessage ));});
 
-    }
+
+    this.restService.locationUpdate(options)
+      .subscribe(
+        resdata => {this.resdata= resdata; console.log("res basicInfo : " + JSON.stringify(this.resdata )); console.log(JSON.stringify(options)); this.pageredirection();},
+        error => this.errorMessage = <any>error);
   }
 
 showBasicInfoPagefun(){
@@ -180,7 +183,8 @@ showBasicInfoPagefun(){
 
   selectlocation(latLng){
 
-    this.locationSelected =  JSON.stringify(latLng);
+    this.locationSelected =  latLng ;
+    // this.locationSelected = {lat: 0, lng: 0};
     this.clearMarkers();
     let marker = new google.maps.Marker({
       position: latLng,
@@ -203,7 +207,8 @@ showBasicInfoPagefun(){
         lat: resp.coords.latitude,
         lng: resp.coords.longitude
       };
-      this.locationSelected = JSON.stringify (pos);
+      this.locationSelected = pos ;
+      // this.locationSelected = {lat: 0, lng: 0};
       // console.logo(pos);
       let marker = new google.maps.Marker({
         position: pos,
@@ -252,7 +257,8 @@ showBasicInfoPagefun(){
           position: results[0].geometry.location,
           map: this.map
         });
-          this.locationSelected = JSON.stringify (results[0].geometry.location);
+          this.locationSelected = results[0].geometry.location;
+          // this.locationSelected = {lat: 0, lng: 0};
         this.markers.push(marker);
         this.map.setCenter(results[0].geometry.location);
       }
@@ -328,6 +334,7 @@ showBasicInfoPagefun(){
           marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
           this.showConnect();
       });
+
   }
   addMap(lat,long){
 
@@ -344,7 +351,8 @@ showBasicInfoPagefun(){
       // this.map = new google.maps.Map(  document.getElementById('map'), mapOptions);////to append the locations
       this.map.addListener('click', (e)=> {
          // this.map.Marker.remove();
-         this.locationSelected = JSON.stringify(e.latLng);
+         this.locationSelected = e.latLng;
+         // this.locationSelected = {lat: 0, lng: 0};
         this.selectlocation(e.latLng);
         // alert(this.locationSelected);
      });
@@ -375,7 +383,8 @@ showBasicInfoPagefun(){
 
           console.log(pos);
           this.addMap(pos.coords.latitude,pos.coords.longitude);
-          this.locationSelected = JSON.stringify ({ "lat" : pos.coords.latitude, "lng" : pos.coords.longitude });
+          this.locationSelected = { "lat" : pos.coords.latitude, "lng" : pos.coords.longitude };
+          // this.locationSelected = {lat: 0, lng: 0};
 
       },(err : PositionError)=>{
           console.log("error : " + err.message);
