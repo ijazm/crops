@@ -6,16 +6,20 @@ import { Geolocation, GeolocationOptions, Geoposition, PositionError } from '@io
 
 import { BasicinfoPage } from '../../pages/basicinfo/basicinfo';
 import { RestProvider } from '../../providers/rest/rest';
+import { Storage } from '@ionic/storage';
+import { Observable } from 'rxjs/Observable';
+
+
 
 
 
 
 /**
- * Generated class for the GeomapPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+* Generated class for the GeomapPage page.
+*
+* See https://ionicframework.com/docs/components/#navigation for more info on
+* Ionic pages and navigation.
+*/
 declare var google: any;
 @IonicPage()
 @Component({
@@ -31,41 +35,53 @@ export class GeomapPage {
   places: Array<any>;
   showMe: any = true;
   searchFor: any = "Farmers and crops";
-  allUsersDetails:any;
-  sortedNearByDealer : any ;
+  allUsersDetails: any;
+  sortedNearByDealer: any;
 
   resdata: any;
   errorMessage: any;
   // private secureStorage:SecureStorage;
-  data:any;
-  error:any;
+  data: any;
+  error: any;
+  validUser: any;
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              public platform: Platform,
-              private geolocation: Geolocation,
-              private googleMaps: GoogleMaps,
-              public restService: RestProvider) {
+    public navParams: NavParams,
+    public platform: Platform,
+    private geolocation: Geolocation,
+    private googleMaps: GoogleMaps,
+    public restService: RestProvider,
+    private storage: Storage) {
+
     platform.ready().then(() => {
+
     });
   }
 
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad GeomapPage');
-    // this.allUsersData();
+    this.storage.get('validUser').then((data) => {
+      this.validUser = data;
+      let mapOptions = {
+        center: { lat: -34.9011, lng: -56.1645 },
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true
+      }
+      this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      this.getUserPosition();
+    });
 
-    let mapOptions = {
-      center: { lat: -34.9011, lng: -56.1645 },
-      zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      disableDefaultUI: true
-    }
-
-    this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
-     this.getUserPosition();
   }
+  // async fun(){
+  //   return await this.storage.get('validUser').sync((data)=> {  this.validUser1 = data; alert(data);});
+  // }
 
+  // this.storage.get('validUser').subscribe((data) => {
+  // this.validUser = data;
+  // });
+  // alert("abuh" + this.validUser );
   // allUsersData(){
   //   let options = {
   //     nickName : "empty object"
@@ -125,6 +141,15 @@ export class GeomapPage {
 
   }
 
+  funtoload() {
+    this.storage.set('validUser', true);
+    this.storage.set('userId', null);
+
+    this.storage.get('age').then((val) => {
+      this.validUser = val;
+      // alert('Your age is'+  val);
+    });
+  }
 
   getRestaurants(latLng) {
     var service = new google.maps.places.PlacesService(this.map);
@@ -148,10 +173,18 @@ export class GeomapPage {
 
   }
   show() {
-    this.showMe = true;
+    // this.storage.set('validUser', true);
+    // this.storage.set('userId', null);
+    let usersValidty;
+    alert(usersValidty);
+    this.storage.get('validUser').then((val) => {
+      this.showMe = val;
+      alert('Your age is' + val);
+    });
+    // this.showMe = true;
   }
   createMarker(place) {
-    alert(JSON.stringify( place));
+    // alert(JSON.stringify( place));
     let marker = new google.maps.Marker({
       map: this.map,
       animation: google.maps.Animation.DROP,
@@ -159,15 +192,15 @@ export class GeomapPage {
     });
     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
     marker.addListener('click', () => {
-      //this.someProperty = Math.random();
       marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
-      this.showMe= false;
+      this.showMe = false;
+      // this.show();
     });
-     this.map.addListener('click' , () =>{
-       // alert("map click");
-       marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-       this.showMe= true;
-     });
+    this.map.addListener('click', () => {
+      marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+      this.showMe = true;
+      // this.show();
+    });
   }
   addMap(lat, long) {
 
@@ -182,7 +215,7 @@ export class GeomapPage {
 
     this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
     let options = {
-      location :latLng,
+      location: latLng,
       distKm: 50
     };
 
@@ -197,15 +230,15 @@ export class GeomapPage {
 
   }
 
-  custmarker(val){
-    for (let i = 0; i <  val.length; i++) {
-    let latitude  = val[i].Location[0].coordinates[0] ;
-    let Longitude  = val[i].Location[0].coordinates[1] ;
-      let pos = { lat : latitude  , lng  : Longitude } ;
+  custmarker(val) {
+    for (let i = 0; i < val.length; i++) {
+      let latitude = val[i].Location[0].coordinates[0];
+      let Longitude = val[i].Location[0].coordinates[1];
+      let pos = { lat: latitude, lng: Longitude };
       // alert(JSON.stringify(pos));
-       this.createMarker(pos);
+      this.createMarker(pos);
     }
-this.addMarker();
+    this.addMarker();
   }
 
   getUserPosition() {

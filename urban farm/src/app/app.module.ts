@@ -31,6 +31,7 @@ import { FilePath } from '@ionic-native/file-path';
 import { Camera } from '@ionic-native/camera';
 
 import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage';
+import { IonicStorageModule } from '@ionic/storage';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    HttpClientModule
+    HttpClientModule,
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -84,7 +86,8 @@ import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage
     Transfer,
     Camera,
     FilePath,
-    SecureStorage
+    SecureStorage,
+    IonicStorageModule
   ]
 })
 export class AppModule { }

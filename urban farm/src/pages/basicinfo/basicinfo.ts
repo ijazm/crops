@@ -159,6 +159,7 @@ error:any;
       phoneNumber: this.phoneNumber,
       connections: 'false'
     };
+    console.log(JSON.stringify(options));
     if (options.nickName == ' ' || typeof (options.nickName) == "undefined") {
       alert('Provide valid info');
     } else {
