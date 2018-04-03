@@ -21,14 +21,24 @@ page-geomap {
     box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.14), 0 0px 0px 0px rgba(0, 0, 0, 0.2), 0 0px 0px 0 rgba(0, 0, 0, 0.12);
 }
 
-#btn {
+#signupBtn {
   opacity: 0.3;
   position:relative;
   float: right;
   bottom:40px;
   transition: 0.5s;
 }
-#btn {
+#signupBtn {
+  opacity: 1;
+}
+#connectBtn {
+  opacity: 0.3;
+  position:relative;
+  float: right;
+  bottom:40px;
+  transition: 0.5s;
+}
+#connectBtn {
   opacity: 1;
 }
 }

@@ -61,19 +61,19 @@ error:any;
   }
 
   cropselect() {
-    // let options = {
-    //   basicInfoId : this.restService.userId,
-    //   cropType1: this.croptTypeSelected1
-    // };
-    // if (options.cropType1 == ' ' || typeof (options.cropType1) == "undefined") {
-    //   alert('Provide valid info');
-    // } else {
-    //   //console.log( JSON.stringify(options));
-    //   this.restService.cropSelect(options)
-    //     .subscribe(
-    //       resdata => {this.resdata= resdata; console.log("res basicInfo : " + JSON.stringify(this.resdata ));this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
-    //       error => this.errorMessage = <any>error);
-    // }
+    let options = {
+      basicInfoId : this.restService.userId,
+      cropType1: this.croptTypeSelected1
+    };
+    if (options.cropType1 == ' ' || typeof (options.cropType1) == "undefined") {
+      alert('Provide valid info');
+    } else {
+      //console.log( JSON.stringify(options));
+      this.restService.cropSelect(options)
+        .subscribe(
+          resdata => {this.resdata= resdata; console.log("res basicInfo : " + JSON.stringify(this.resdata ));this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
+          error => this.errorMessage = <any>error);
+    }
     this.pageredirection();
   }
 

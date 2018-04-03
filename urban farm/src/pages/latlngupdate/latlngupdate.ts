@@ -396,5 +396,7 @@ showBasicInfoPagefun(){
   pageredirection(){
     this.navCtrl.push(CropselectPage);
   }
+  connect(){
 
+  }
 }

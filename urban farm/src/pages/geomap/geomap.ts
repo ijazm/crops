@@ -5,6 +5,7 @@ import { GoogleMaps, GoogleMap, GoogleMapsEvent, LatLng, CameraPosition, MarkerO
 import { Geolocation, GeolocationOptions, Geoposition, PositionError } from '@ionic-native/geolocation';
 
 import { BasicinfoPage } from '../../pages/basicinfo/basicinfo';
+import { ProfiledashboardPage } from '../../pages/profiledashboard/profiledashboard';
 import { RestProvider } from '../../providers/rest/rest';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
@@ -33,8 +34,9 @@ export class GeomapPage {
   currentPos: Geoposition;
   options: GeolocationOptions;
   places: Array<any>;
-  showMe: any = true;
-  searchFor: any = "Farmers and crops";
+  signupBtn: any = false;
+  connectBtn = false;
+  searchFor: any ;
   allUsersDetails: any;
   sortedNearByDealer: any;
 
@@ -63,6 +65,7 @@ export class GeomapPage {
     console.log('ionViewDidLoad GeomapPage');
     this.storage.get('validUser').then((data) => {
       this.validUser = data;
+      // alert(this.validUser);
       let mapOptions = {
         center: { lat: -34.9011, lng: -56.1645 },
         zoom: 15,
@@ -141,16 +144,6 @@ export class GeomapPage {
 
   }
 
-  funtoload() {
-    this.storage.set('validUser', true);
-    this.storage.set('userId', null);
-
-    this.storage.get('age').then((val) => {
-      this.validUser = val;
-      // alert('Your age is'+  val);
-    });
-  }
-
   getRestaurants(latLng) {
     var service = new google.maps.places.PlacesService(this.map);
     var request = {
@@ -173,18 +166,9 @@ export class GeomapPage {
 
   }
   show() {
-    // this.storage.set('validUser', true);
-    // this.storage.set('userId', null);
-    let usersValidty;
-    alert(usersValidty);
-    this.storage.get('validUser').then((val) => {
-      this.showMe = val;
-      alert('Your age is' + val);
-    });
-    // this.showMe = true;
+    // this.signupBtn = true;
   }
   createMarker(place) {
-    // alert(JSON.stringify( place));
     let marker = new google.maps.Marker({
       map: this.map,
       animation: google.maps.Animation.DROP,
@@ -193,12 +177,20 @@ export class GeomapPage {
     marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
     marker.addListener('click', () => {
       marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
-      this.showMe = false;
+      if (this.validUser != true) {
+        this.signupBtn = true;
+        this.connectBtn = false;
+      } else {
+        this.signupBtn = false;
+        this.connectBtn = true;
+      }
+      // alert(this.validUser);
       // this.show();
     });
     this.map.addListener('click', () => {
       marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-      this.showMe = true;
+      this.signupBtn = false;
+      this.connectBtn = false;
       // this.show();
     });
   }
@@ -261,5 +253,7 @@ export class GeomapPage {
   pageredirection() {
     this.navCtrl.push(BasicinfoPage);
   }
-
+connect(){
+  this.navCtrl.push(ProfiledashboardPage);
+}
 }

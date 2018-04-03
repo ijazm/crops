@@ -38,23 +38,23 @@ export class ConnectionsPage {
 
   }
   Connections(){
-    // this.ConnectionsStatus();
-    //
-    //
-    // let options = {
-    //   basicInfoId : this.restService.userId,
-    //   connection : this.connections
-    // };
-    // console.log(JSON.stringify(options));
-    // if (options.connection == ' ' || typeof (options.connection) == "undefined") {
-    //   alert('Provide valid info');
-    // } else {
-    //   //console.log( JSON.stringify(options));
-    //   this.restService.connections(options)
-    //     .subscribe(
-    //       resdata => {this.resdata= resdata; console.log("res basicInfo : " + JSON.stringify(this.resdata ));this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
-    //       error => this.errorMessage = <any>error);
-    // }
+    this.ConnectionsStatus();
+
+
+    let options = {
+      basicInfoId : this.restService.userId,
+      connection : this.connections
+    };
+    console.log(JSON.stringify(options));
+    if (options.connection == ' ' || typeof (options.connection) == "undefined") {
+      alert('Provide valid info');
+    } else {
+      //console.log( JSON.stringify(options));
+      this.restService.connections(options)
+        .subscribe(
+          resdata => {this.resdata= resdata; console.log("res basicInfo : " + JSON.stringify(this.resdata ));this.pageredirection();},//{ this.resdata = resdata; if (this.resdata != "") { if (this.resdata[0].Email == options.email && this.resdata[0].Email != '') this.navCtrl.push(HomePage); { console.log(JSON.stringify(this.resdata[0]['_id'])) } } else { alert('Pleas Provide valid Information') }; },
+          error => this.errorMessage = <any>error);
+    }
     this.pageredirection();
   }
 
